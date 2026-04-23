@@ -4,13 +4,15 @@ import glob
 import json
 import subprocess
 import threading
-from flask import Flask, request, jsonify, send_file, render_template
+import urllib.request
+from flask import Flask, request, jsonify, send_file, render_template, Response, stream_with_context
 
 app = Flask(__name__)
 DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "downloads")
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 jobs = {}
+preview_urls = {}
 
 
 def run_download(job_id, url, format_choice, format_id):
@@ -163,6 +165,93 @@ def download_file(job_id):
     if not job or job["status"] != "done":
         return jsonify({"error": "File not ready"}), 404
     return send_file(job["file"], as_attachment=True, download_name=job["filename"])
+
+
+@app.route("/api/preview-url", methods=["POST"])
+def get_preview_url():
+    data = request.json
+    url = data.get("url", "").strip()
+    if not url:
+        return jsonify({"error": "No URL provided"}), 400
+
+    if not url.startswith(("http://", "https://")):
+        return jsonify({"error": "Invalid URL"}), 400
+
+    # Prefer combined formats up to 720p; fall back to separate DASH streams
+    fmt = "b[height<=720][ext=mp4]/b[ext=mp4]/b[height<=720]/b/bv[height<=720]+ba/bv+ba"
+    cmd = ["yt-dlp", "--no-playlist", "-g", "-f", fmt, url]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if result.returncode != 0:
+            return jsonify({"error": result.stderr.strip().split("\n")[-1]}), 400
+
+        urls = [u.strip() for u in result.stdout.strip().split("\n") if u.strip()]
+        if not urls:
+            return jsonify({"error": "No streamable URL found"}), 400
+
+        token = uuid.uuid4().hex[:14]
+        # Keep dict from growing without bound (cap at 200 entries)
+        if len(preview_urls) >= 200:
+            oldest = next(iter(preview_urls))
+            del preview_urls[oldest]
+        preview_urls[token] = {
+            "video": urls[0],
+            "audio": urls[1] if len(urls) >= 2 else None,
+        }
+        return jsonify({"token": token, "has_audio": len(urls) >= 2})
+    except subprocess.TimeoutExpired:
+        return jsonify({"error": "Timed out fetching stream URL"}), 400
+    except Exception:
+        return jsonify({"error": "Failed to retrieve stream URL"}), 400
+
+
+@app.route("/api/stream/<token>")
+def stream_video(token):
+    entry = preview_urls.get(token)
+    if not entry:
+        return jsonify({"error": "Stream not found"}), 404
+
+    stream_type = request.args.get("type", "video")
+    target_url = entry.get(stream_type)
+    if not target_url:
+        return jsonify({"error": "Stream type not available"}), 404
+
+    range_header = request.headers.get("Range")
+    req_headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0 Safari/537.36"
+        ),
+    }
+    if range_header:
+        req_headers["Range"] = range_header
+
+    try:
+        req = urllib.request.Request(target_url, headers=req_headers)
+        resp = urllib.request.urlopen(req, timeout=30)
+
+        status = resp.status
+        resp_headers = {"Accept-Ranges": "bytes"}
+        for key in ("Content-Type", "Content-Length", "Content-Range"):
+            val = resp.headers.get(key)
+            if val:
+                resp_headers[key] = val
+
+        def generate():
+            while True:
+                chunk = resp.read(65536)
+                if not chunk:
+                    break
+                yield chunk
+
+        return Response(
+            stream_with_context(generate()),
+            status=status,
+            headers=resp_headers,
+        )
+    except Exception:
+        return jsonify({"error": "Failed to stream video"}), 502
 
 
 if __name__ == "__main__":

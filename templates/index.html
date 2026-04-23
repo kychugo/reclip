@@ -378,6 +378,257 @@
       .controls { flex-wrap: wrap; }
       .fetch-btn { width: 100%; }
     }
+
+    /* ── Preview button ── */
+    .card-preview-btn {
+      padding: 6px 14px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 7px;
+      background: transparent;
+      color: var(--fg);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .card-preview-btn:hover { border-color: var(--fg); background: rgba(26,26,24,0.04); }
+    .card-preview-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Preview modal overlay ── */
+    .preview-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .preview-container {
+      width: 100%;
+      max-width: 900px;
+      background: #1a1a18;
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 92vh;
+    }
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .preview-title-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .preview-close-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 0.15s, background 0.15s;
+    }
+    .preview-close-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+    .preview-video-wrap {
+      position: relative;
+      background: #000;
+      cursor: pointer;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #preview-video {
+      max-width: 100%;
+      max-height: 60vh;
+      width: 100%;
+      display: block;
+      pointer-events: none;
+    }
+    .preview-play-flash {
+      position: absolute;
+      pointer-events: none;
+      color: rgba(255,255,255,0.85);
+      opacity: 0;
+    }
+    .preview-play-flash.flash-anim {
+      animation: flashFade 0.55s ease-out forwards;
+    }
+    @keyframes flashFade {
+      0%   { opacity: 1; transform: scale(1);   }
+      100% { opacity: 0; transform: scale(1.6); }
+    }
+    .preview-loading-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.4);
+    }
+
+    /* ── Controls ── */
+    .preview-controls {
+      padding: 6px 12px 10px;
+      background: #1a1a18;
+      flex-shrink: 0;
+      user-select: none;
+    }
+    .preview-progress-wrap {
+      position: relative;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      touch-action: none;
+    }
+    .preview-progress-bg {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px;
+      transition: height 0.15s;
+    }
+    .preview-progress-wrap:hover .preview-progress-bg { height: 6px; }
+    .preview-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      width: 0%;
+      pointer-events: none;
+    }
+    .preview-progress-thumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 13px;
+      height: 13px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      left: 0%;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .preview-progress-wrap:hover .preview-progress-thumb { opacity: 1; }
+
+    .preview-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 2px;
+      gap: 6px;
+    }
+    .preview-controls-left,
+    .preview-controls-right {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .preview-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      min-height: 36px;
+      transition: color 0.15s, background 0.15s;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.02em;
+    }
+    .preview-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .preview-btn:active { background: rgba(255,255,255,0.14); }
+
+    .preview-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.45);
+      margin: 0 4px;
+      white-space: nowrap;
+    }
+    .preview-vol-wrap {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .preview-vol-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 68px;
+      height: 4px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    .preview-vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+    }
+    .preview-vol-slider::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      cursor: pointer;
+      border: none;
+    }
+    .preview-speed-select {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      color: rgba(255,255,255,0.7);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      padding: 4px 6px;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.15s;
+    }
+    .preview-speed-select:hover { background: rgba(255,255,255,0.12); }
+    .preview-speed-select option { background: #1a1a18; color: #fff; }
+
+    @media (max-width: 500px) {
+      .preview-vol-slider { width: 48px; }
+      .preview-time { font-size: 0.6rem; }
+      #preview-video { max-height: 42vh; }
+      .preview-controls-right { gap: 0; }
+    }
   </style>
 </head>
 <body>
@@ -404,6 +655,76 @@
       YouTube &middot; TikTok &middot; Instagram &middot; Twitter/X &middot; Reddit &middot; Facebook<br>
       Vimeo &middot; Twitch &middot; Dailymotion &middot; SoundCloud &middot; Loom &middot; Streamable<br>
       Pinterest &middot; Tumblr &middot; Threads &middot; LinkedIn &middot; 1000+ more
+    </div>
+  </div>
+
+  <!-- ── Video Preview Modal ── -->
+  <div id="preview-modal" class="preview-overlay" style="display:none" onclick="closePreview()" role="dialog" aria-modal="true" aria-label="Video preview">
+    <div class="preview-container" onclick="event.stopPropagation()">
+
+      <div class="preview-header">
+        <span class="preview-title-text" id="preview-title-text"></span>
+        <button class="preview-close-btn" onclick="closePreview()" title="Close (Esc)" aria-label="Close preview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="preview-video-wrap" id="preview-video-wrap" onclick="togglePlay()" aria-label="Click to play/pause">
+        <video id="preview-video" preload="metadata"></video>
+        <audio id="preview-audio" preload="metadata" style="display:none"></audio>
+        <div class="preview-play-flash" id="preview-play-flash"></div>
+        <div class="preview-loading-overlay" id="preview-loading">
+          <div class="spin" style="width:36px;height:36px;border-width:3px;color:#fff"></div>
+        </div>
+      </div>
+
+      <div class="preview-controls">
+        <div class="preview-progress-wrap" id="preview-progress-wrap"
+             onclick="progressClick(event)"
+             ontouchstart="progressTouchStart(event)"
+             ontouchmove="progressTouchMove(event)"
+             ontouchend="progressTouchEnd(event)"
+             role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="preview-progress-bg">
+            <div class="preview-progress-fill" id="preview-progress-fill"></div>
+            <div class="preview-progress-thumb" id="preview-progress-thumb"></div>
+          </div>
+        </div>
+
+        <div class="preview-controls-row">
+          <div class="preview-controls-left">
+            <button class="preview-btn" onclick="seekRel(-10)" title="Back 10s (←)" aria-label="Rewind 10 seconds">−10s</button>
+            <button class="preview-btn" id="preview-play-btn" onclick="togglePlay()" title="Play / Pause (Space)" aria-label="Play/Pause">
+              <svg id="play-icon"  viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg id="pause-icon" viewBox="0 0 24 24" fill="currentColor" width="22" height="22" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+            <button class="preview-btn" onclick="seekRel(10)" title="Forward 10s (→)" aria-label="Forward 10 seconds">+10s</button>
+            <span class="preview-time" id="preview-time-display">0:00 / 0:00</span>
+          </div>
+
+          <div class="preview-controls-right">
+            <div class="preview-vol-wrap">
+              <button class="preview-btn" id="preview-mute-btn" onclick="toggleMute()" title="Mute / Unmute (M)" aria-label="Toggle mute">
+                <svg id="vol-on-icon"  viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                <svg id="vol-off-icon" viewBox="0 0 24 24" fill="currentColor" width="18" height="18" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+              </button>
+              <input type="range" class="preview-vol-slider" id="preview-vol-slider"
+                     min="0" max="1" step="0.05" value="1"
+                     oninput="setVolume(this.value)" aria-label="Volume">
+            </div>
+            <select class="preview-speed-select" id="preview-speed-select"
+                    onchange="setSpeed(this.value)" aria-label="Playback speed">
+              <option value="0.5">0.5×</option>
+              <option value="0.75">0.75×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -566,7 +887,10 @@
 
       let actionHtml = '';
       if (c.status === 'ready') {
-        actionHtml = `<button class="card-dl-btn" onclick="dlCard(${idx})">Download</button>${qualityChips}`;
+        const previewBtn = !isAudio
+          ? `<button class="card-preview-btn" onclick="openPreview(${idx})"><svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><polygon points="5 3 19 12 5 21 5 3"/></svg>Preview</button>`
+          : '';
+        actionHtml = `${previewBtn}<button class="card-dl-btn" onclick="dlCard(${idx})">Download</button>${qualityChips}`;
       } else if (c.status === 'downloading') {
         actionHtml = `<span class="card-status downloading"><span class="spin"></span> Downloading...</span>`;
       } else if (c.status === 'done') {
@@ -684,6 +1008,268 @@
 
       if (btn) { btn.disabled = false; btn.textContent = 'Download All'; }
     }
+
+    // ── Video Preview ──────────────────────────────────────────────────────────
+    let _previewHasAudio = false;
+    let _seekDragging = false;
+
+    function openPreview(idx) {
+      const c = cardData[idx];
+      const btn = document.querySelector(`#card-${idx} .card-preview-btn`);
+      if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+
+      fetch('/api/preview-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: c.url }),
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (btn) { btn.disabled = false; btn.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><polygon points="5 3 19 12 5 21 5 3"/></svg>Preview'; }
+          if (data.error) { alert('Preview unavailable: ' + friendlyError(data.error)); return; }
+          _showPreviewModal(c.title || 'Preview', data.token, !!data.has_audio);
+        })
+        .catch(err => {
+          if (btn) { btn.disabled = false; btn.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><polygon points="5 3 19 12 5 21 5 3"/></svg>Preview'; }
+          alert('Preview failed: ' + err.message);
+        });
+    }
+
+    function _showPreviewModal(title, token, hasAudio) {
+      _previewHasAudio = hasAudio;
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+
+      document.getElementById('preview-title-text').textContent = title;
+      document.getElementById('preview-progress-fill').style.width = '0%';
+      document.getElementById('preview-progress-thumb').style.left = '0%';
+      document.getElementById('preview-time-display').textContent = '0:00 / 0:00';
+      document.getElementById('preview-speed-select').value = '1';
+      document.getElementById('preview-vol-slider').value = '1';
+      _updatePlayIcon(false);
+      _updateVolIcon(false);
+
+      vid.src = `/api/stream/${token}`;
+      vid.playbackRate = 1;
+
+      if (hasAudio) {
+        vid.muted = true;
+        aud.src = `/api/stream/${token}?type=audio`;
+        aud.volume = 1;
+        aud.muted = false;
+        aud.playbackRate = 1;
+      } else {
+        vid.muted = false;
+        vid.volume = 1;
+        aud.src = '';
+      }
+
+      document.getElementById('preview-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      document.getElementById('preview-loading').style.display = 'flex';
+
+      vid.play().then(() => {
+        if (hasAudio) aud.play().catch(() => {});
+      }).catch(() => {});
+    }
+
+    function closePreview() {
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+      vid.pause(); vid.src = '';
+      aud.pause(); aud.src = '';
+      document.getElementById('preview-modal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function togglePlay() {
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+      if (vid.paused) {
+        vid.play();
+        if (_previewHasAudio) aud.play().catch(() => {});
+        _showPlayFlash(false);
+      } else {
+        vid.pause();
+        if (_previewHasAudio) aud.pause();
+        _showPlayFlash(true);
+      }
+    }
+
+    function seekRel(delta) {
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+      const t = Math.max(0, Math.min(vid.currentTime + delta, vid.duration || 0));
+      vid.currentTime = t;
+      if (_previewHasAudio) aud.currentTime = t;
+    }
+
+    function _seekToFraction(fraction) {
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+      const t = fraction * (vid.duration || 0);
+      vid.currentTime = t;
+      if (_previewHasAudio) aud.currentTime = t;
+    }
+
+    function progressClick(e) {
+      const wrap = document.getElementById('preview-progress-wrap');
+      const rect = wrap.getBoundingClientRect();
+      _seekToFraction(Math.max(0, Math.min((e.clientX - rect.left) / rect.width, 1)));
+    }
+
+    function progressTouchStart(e) {
+      _seekDragging = true;
+      e.preventDefault();
+      _progressTouchSeek(e);
+    }
+    function progressTouchMove(e) {
+      if (!_seekDragging) return;
+      e.preventDefault();
+      _progressTouchSeek(e);
+    }
+    function progressTouchEnd() { _seekDragging = false; }
+    function _progressTouchSeek(e) {
+      const wrap = document.getElementById('preview-progress-wrap');
+      const rect = wrap.getBoundingClientRect();
+      const touch = e.touches[0];
+      _seekToFraction(Math.max(0, Math.min((touch.clientX - rect.left) / rect.width, 1)));
+    }
+
+    function toggleMute() {
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+      const target = _previewHasAudio ? aud : vid;
+      target.muted = !target.muted;
+      _updateVolIcon(target.muted);
+    }
+
+    function setVolume(val) {
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+      const v = parseFloat(val);
+      const target = _previewHasAudio ? aud : vid;
+      target.volume = v;
+      target.muted = (v === 0);
+      _updateVolIcon(v === 0);
+    }
+
+    function setSpeed(val) {
+      const vid = document.getElementById('preview-video');
+      const aud = document.getElementById('preview-audio');
+      const s = parseFloat(val);
+      vid.playbackRate = s;
+      if (_previewHasAudio) aud.playbackRate = s;
+    }
+
+    function _updatePlayIcon(playing) {
+      document.getElementById('play-icon').style.display  = playing ? 'none' : '';
+      document.getElementById('pause-icon').style.display = playing ? '' : 'none';
+    }
+
+    function _updateVolIcon(muted) {
+      document.getElementById('vol-on-icon').style.display  = muted ? 'none' : '';
+      document.getElementById('vol-off-icon').style.display = muted ? '' : 'none';
+    }
+
+    function _showPlayFlash(isPause) {
+      const flash = document.getElementById('preview-play-flash');
+      flash.innerHTML = isPause
+        ? '<svg viewBox="0 0 24 24" fill="currentColor" width="54" height="54"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="currentColor" width="54" height="54"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+      flash.classList.remove('flash-anim');
+      void flash.offsetWidth;
+      flash.classList.add('flash-anim');
+    }
+
+    // Video element event wiring
+    (function () {
+      const vid = document.getElementById('preview-video');
+      if (!vid) return;
+
+      vid.addEventListener('timeupdate', () => {
+        const dur = vid.duration || 0;
+        const cur = vid.currentTime;
+        const pct = dur > 0 ? (cur / dur * 100) : 0;
+        document.getElementById('preview-progress-fill').style.width = pct + '%';
+        document.getElementById('preview-progress-thumb').style.left = pct + '%';
+        document.getElementById('preview-time-display').textContent =
+          fmtDur(Math.floor(cur)) + ' / ' + fmtDur(Math.floor(dur));
+        document.getElementById('preview-progress-wrap').setAttribute('aria-valuenow', Math.round(pct));
+      });
+
+      vid.addEventListener('play',   () => _updatePlayIcon(true));
+      vid.addEventListener('pause',  () => _updatePlayIcon(false));
+      vid.addEventListener('ended',  () => _updatePlayIcon(false));
+      vid.addEventListener('waiting', () => {
+        document.getElementById('preview-loading').style.display = 'flex';
+      });
+      vid.addEventListener('playing', () => {
+        document.getElementById('preview-loading').style.display = 'none';
+      });
+      vid.addEventListener('canplay', () => {
+        document.getElementById('preview-loading').style.display = 'none';
+      });
+
+      // Periodic audio-drift correction for dual-stream mode (only while modal open)
+      setInterval(() => {
+        if (!_previewHasAudio) return;
+        if (document.getElementById('preview-modal').style.display === 'none') return;
+        if (vid.paused) return;
+        const aud = document.getElementById('preview-audio');
+        if (Math.abs(vid.currentTime - aud.currentTime) > 0.4) {
+          aud.currentTime = vid.currentTime;
+        }
+      }, 2000);
+    }());
+
+    // Keyboard shortcuts (active only when preview modal is open)
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('preview-modal').style.display === 'none') return;
+      // Don't override typing in inputs/selects
+      if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+      switch (e.key) {
+        case ' ':
+        case 'k':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'Escape':
+          closePreview();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          seekRel(-5);
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          seekRel(5);
+          break;
+        case 'm':
+        case 'M':
+          toggleMute();
+          break;
+        case '>':
+        case '.': {
+          const sel = document.getElementById('preview-speed-select');
+          if (sel.selectedIndex < sel.options.length - 1) {
+            sel.selectedIndex++;
+            setSpeed(sel.value);
+          }
+          break;
+        }
+        case '<':
+        case ',': {
+          const sel = document.getElementById('preview-speed-select');
+          if (sel.selectedIndex > 0) {
+            sel.selectedIndex--;
+            setSpeed(sel.value);
+          }
+          break;
+        }
+      }
+    });
   </script>
 </body>
 </html>
